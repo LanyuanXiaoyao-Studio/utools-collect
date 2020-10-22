@@ -1,0 +1,38 @@
+{
+  "pluginName": "文件收藏",
+  "author": "lanyuanxiaoyao",
+  "homepage": "http://lanyuanxiaoyao.com",
+  "description": "收藏文件夹和文件, 添加到 utools 快速访问.",
+  "version": "0.0.6",
+  "logo": "logo.png",
+  "main": "index.html",
+  "preload": "preload.js",
+  "pluginSetting": {
+    "single": true,
+    "height": 1
+  },
+  "features": [
+    {
+      "code": "collect",
+      "explain": "管理收藏的文件夹和文件",
+      "cmds": [
+        "收藏",
+        {
+          "type": "files",
+          "label": "添加到文件收藏",
+          "minLength": 1
+        },
+        {
+          "type": "window",
+          "label": "添加到文件收藏",
+          "match": {
+            "app": [
+              "Finder.app",
+              "explorer.exe"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
