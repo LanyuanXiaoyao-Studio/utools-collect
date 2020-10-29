@@ -6,16 +6,10 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import Utils from './utils'
 
 export default {
   mounted() {
     utools.onPluginReady(() => {
-      // 启动的时候重新刷新一遍 feature, 因为发现跨设备的时候 feature 没有自动同步
-      // 这个行为尚未验证是否在新版本需要
-      utools.getFeatures()
-            .forEach(i => utools.removeFeature(i.code))
-      Utils.addFeatures(this.settings.data.files)
       // 以下是一些个人推广信息, fork 使用的朋友记得改一下或者直接去掉
       window.get('https://gitee.com/lanyuanxiaoyao/utools-data/raw/master/common.json', result => {
         let data = JSON.parse(result)

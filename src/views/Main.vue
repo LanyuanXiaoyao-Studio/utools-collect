@@ -40,6 +40,19 @@
             添加文件夹
           </el-button>
         </span>
+        <el-tooltip
+            content="当 uTools 主输入框中没有出现已添加的文件, 可尝试重建索引使其恢复"
+            effect="dark"
+            placement="top"
+        >
+          <el-button
+              class="rebuild-button"
+              type="text"
+              @click="rebuild()"
+          >
+            重建索引
+          </el-button>
+        </el-tooltip>
       </div>
       <el-table
           :data="files"
@@ -200,6 +213,7 @@ export default {
       this.files.push(file)
       Utils.addFeature(file)
       this.commit()
+      this.$success(`文件「${file.path}」添加成功`);
     },
     deleteFile(path) {
       let index = this.files.findIndex(f => f.path === path);
@@ -208,6 +222,13 @@ export default {
         this.files.splice(index, 1);
       }
       this.commit()
+      this.$success(`文件「${path}」已删除`);
+    },
+    rebuild() {
+      utools.getFeatures()
+            .forEach(i => utools.removeFeature(i.code))
+      Utils.addFeatures(this.settings.data.files)
+      this.$success('重建成功');
     },
     addAlias(path) {
       let file = find(this.files, f => f.path === path)
@@ -228,6 +249,7 @@ export default {
                 file.aliases.push(value)
                 Utils.updateFeature(file)
                 this.commit()
+                this.$success(`别名「${value}」添加成功`);
               }
             })
             .catch(() => this.$warning('输入已取消'))
@@ -237,6 +259,7 @@ export default {
       remove(file.aliases, value => value === alias)
       Utils.updateFeature(file)
       this.commit()
+      this.$success(`别名「${alias}」已删除`);
     },
     commit() {
       this.$store.commit('updateSettingsFiles', this.files);
@@ -267,9 +290,9 @@ export default {
     }
   }
 
-  .add-button {
+  .add-button, .rebuild-button {
     float: right;
-    padding: 3px 0;
+    padding: 3px 15px 3px 0;
   }
 
   $image_size: 55px;
