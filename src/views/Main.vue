@@ -14,7 +14,8 @@
               @click="settingDialog.show = true"
           />
         </span>
-        <span v-if="isMac">
+        <div class="operation-bar">
+          <span v-if="isMac">
           <el-button
               class="add-button"
               type="text"
@@ -23,7 +24,8 @@
             添加文件/文件夹
           </el-button>
         </span>
-        <span v-else>
+          <span v-else>
+          <el-divider direction="vertical"/>
           <el-button
               class="add-button"
               style="margin-left: 10px"
@@ -32,6 +34,7 @@
           >
             添加文件
           </el-button>
+          <el-divider direction="vertical"/>
           <el-button
               class="add-button"
               type="text"
@@ -40,19 +43,38 @@
             添加文件夹
           </el-button>
         </span>
-        <el-tooltip
-            content="当 uTools 主输入框中没有出现已添加的文件, 可尝试重建索引使其恢复"
-            effect="dark"
-            placement="top"
-        >
-          <el-button
-              class="rebuild-button"
-              type="text"
-              @click="rebuild()"
+          <el-divider direction="vertical"/>
+          <el-tooltip
+              content="当 uTools 主输入框中没有出现已添加的文件, 可尝试重建索引使其恢复"
+              effect="dark"
+              placement="top"
           >
-            重建索引
-          </el-button>
-        </el-tooltip>
+            <el-button
+                class="rebuild-button"
+                type="text"
+                @click="rebuild()"
+            >
+              重建索引
+            </el-button>
+          </el-tooltip>
+          <el-divider direction="vertical"/>
+          <el-dropdown
+              trigger="click"
+              @command="handleSettingDropdown"
+          >
+            <span style="cursor: pointer;color: #409eff">
+              配置
+              <i
+                  class="el-icon-arrow-down"
+                  style="font-size: 12px"
+              />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="in">导入</el-dropdown-item>
+              <el-dropdown-item command="out">导出</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
       <el-table
           :data="files"
@@ -147,6 +169,7 @@ import remove from 'licia/remove'
 import isEmpty from 'licia/isEmpty'
 import isNil from 'licia/isNil'
 import Settings from '../components/Settings'
+import md5 from 'md5'
 
 export default {
   name: 'Main',
@@ -264,6 +287,39 @@ export default {
     commit() {
       this.$store.commit('updateSettingsFiles', this.files);
       this.$store.commit('saveSettings');
+    },
+    handleSettingDropdown(command) {
+      switch (command) {
+        case 'in':
+          let filePath = window.selectFile('file')
+          let input = window.importSetting(filePath)
+          if (isNil(input.code) || isNil(input.text)) {
+            this.$error(`文件解析错误`);
+            return
+          }
+          let validateHash = md5(input.text)
+          if (input.code !== validateHash) {
+            this.$error(`文件校验错误`);
+            return;
+          }
+          this.files = JSON.parse(input.text)
+          this.commit()
+          this.rebuild()
+          this.$success(`导入成功`);
+          break
+        case 'out':
+          let folderPath = window.selectFile('folder')
+          let data = JSON.stringify(this.files)
+          let hash = md5(data)
+          let result = window.exportSetting(folderPath, `${hash}\n${data}`)
+          if (result.success) {
+            this.$success(`导出成功`);
+          }
+          else {
+            this.$error(`导出失败 ${result.message}`);
+          }
+          break
+      }
     }
   }
 };
@@ -290,9 +346,12 @@ export default {
     }
   }
 
-  .add-button, .rebuild-button {
+  .operation-bar {
     float: right;
-    padding: 3px 15px 3px 0;
+
+    .add-button, .rebuild-button {
+      padding: 3px 0 3px 0;
+    }
   }
 
   $image_size: 55px;

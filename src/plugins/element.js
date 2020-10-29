@@ -5,6 +5,9 @@ import {
   Col,
   Dialog,
   Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
   Image,
   Message,
   MessageBox,
@@ -12,7 +15,7 @@ import {
   Table,
   TableColumn,
   Tag,
-  Tooltip
+  Tooltip,
 } from 'element-ui';
 
 Vue.use(Card);
@@ -26,6 +29,9 @@ Vue.use(Divider);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Tooltip);
+Vue.use(Dropdown);
+Vue.use(DropdownItem);
+Vue.use(DropdownMenu);
 
 Vue.prototype.$success = Message.success;
 Vue.prototype.$error = Message.error;

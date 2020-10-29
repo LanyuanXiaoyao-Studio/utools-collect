@@ -80,3 +80,39 @@ window.get = (url, callback) => {
       })
       .on('error', error => callback(''))
 }
+
+const result = (success, message = '') => {
+  return {
+    success: success,
+    message: message,
+  }
+}
+
+const generateDate = () => {
+  let date = new Date()
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`
+}
+
+window.exportSetting = (currentPath, data) => {
+  let state = fs.statSync(currentPath)
+  if (!state.isDirectory()) {
+    return result(false, '请选择一个文件夹')
+  }
+  let filePath = path.join(currentPath, `utools-collect-setting-${generateDate()}.backup`)
+  fs.writeFileSync(filePath, data)
+  return result(true)
+}
+
+window.importSetting = currentPath => {
+  let state = fs.statSync(currentPath)
+  if (state.isDirectory()) {
+    return result(false, '请选择一个文件')
+  }
+  let data = fs.readFileSync(currentPath, {encoding: 'utf8'})
+  let array = data.split('\n')
+                  .filter(s => s !== null && s !== '')
+  return {
+    code: array[0],
+    text: array[1]
+  }
+}
