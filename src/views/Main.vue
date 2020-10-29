@@ -16,34 +16,34 @@
         </span>
         <div class="operation-bar">
           <span v-if="isMac">
-          <el-button
-              class="add-button"
-              type="text"
-              @click="selectFile('all')"
-          >
-            添加文件/文件夹
-          </el-button>
-        </span>
+            <el-button
+                class="add-button"
+                type="text"
+                @click="selectFile('all')"
+            >
+              添加文件/文件夹
+            </el-button>
+            <el-divider direction="vertical"/>
+          </span>
           <span v-else>
-          <el-divider direction="vertical"/>
-          <el-button
-              class="add-button"
-              style="margin-left: 10px"
-              type="text"
-              @click="selectFile('file')"
-          >
-            添加文件
-          </el-button>
-          <el-divider direction="vertical"/>
-          <el-button
-              class="add-button"
-              type="text"
-              @click="selectFile('folder')"
-          >
-            添加文件夹
-          </el-button>
-        </span>
-          <el-divider direction="vertical"/>
+            <el-button
+                class="add-button"
+                style="margin-left: 10px"
+                type="text"
+                @click="selectFile('file')"
+            >
+              添加文件
+            </el-button>
+            <el-divider direction="vertical"/>
+            <el-button
+                class="add-button"
+                type="text"
+                @click="selectFile('folder')"
+            >
+              添加文件夹
+            </el-button>
+            <el-divider direction="vertical"/>
+          </span>
           <el-tooltip
               content="当 uTools 主输入框中没有出现已添加的文件, 可尝试重建索引使其恢复"
               effect="dark"
@@ -62,13 +62,13 @@
               trigger="click"
               @command="handleSettingDropdown"
           >
-            <span style="cursor: pointer;color: #409eff">
-              配置
-              <i
-                  class="el-icon-arrow-down"
-                  style="font-size: 12px"
-              />
-            </span>
+          <span style="cursor: pointer;color: #409eff">
+            配置
+            <i
+                class="el-icon-arrow-down"
+                style="font-size: 12px"
+            />
+          </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="in">导入</el-dropdown-item>
               <el-dropdown-item command="out">导出</el-dropdown-item>
