@@ -37,6 +37,7 @@ Vue.prototype.$success = Message.success;
 Vue.prototype.$error = Message.error;
 Vue.prototype.$info = Message.info;
 Vue.prototype.$warning = Message.warning;
+Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;

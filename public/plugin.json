@@ -3,7 +3,7 @@
   "author": "lanyuanxiaoyao",
   "homepage": "http://lanyuanxiaoyao.com",
   "description": "收藏文件夹和文件, 添加到 utools 快速访问.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "logo": "logo.png",
   "main": "index.html",
   "preload": "preload.js",

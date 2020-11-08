@@ -189,7 +189,7 @@ export default {
     utools.setExpendHeight(500);
     if (!isNil(this.$route.params) && !isNil(this.$route.params.paths && !isEmpty(this.$route.params.paths))) {
       let paths = this.$route.params.paths
-      this.$warning('文件/文件夹正在添加到收藏...')
+      this.$message.info('文件/文件夹正在添加到收藏...')
       for (let i = 0, length = paths.length; i < length; i++) {
         let path = paths[i]
         if (isNil(path) || isEmpty(path)) {
@@ -197,7 +197,7 @@ export default {
         }
         await this.addFile(path)
       }
-      this.$success('文件/文件夹添加成功...')
+      this.$message.success('文件/文件夹添加成功...')
     }
   },
   destroyed() {
@@ -216,7 +216,7 @@ export default {
     async selectFile(type) {
       let path = window.selectFile(type);
       if (path === null || path === '') {
-        this.$error('选择文件/文件夹失败, 请重试');
+        this.$message.error('选择文件/文件夹失败, 请重试');
         return;
       }
       await this.addFile(path)
@@ -224,19 +224,19 @@ export default {
     async addFile(path) {
       let file = await window.getFile(path);
       if (!file) {
-        this.$error(`获取文件/文件夹信息失败, 请重试\n${path}`);
+        this.$message.error(`获取文件/文件夹信息失败, 请重试\n${path}`);
         return
       }
 
       let index = findIdx(this.files, f => f.path === file.path)
       if (index > -1) {
-        this.$warning('文件/文件夹已存在');
+        this.$message.warning('文件/文件夹已存在');
         return
       }
       this.files.push(file)
       Utils.addFeature(file)
       this.commit()
-      this.$success(`文件「${file.path}」添加成功`);
+      this.$message.success(`文件「${file.path}」添加成功`);
     },
     deleteFile(path) {
       let index = this.files.findIndex(f => f.path === path);
@@ -245,19 +245,19 @@ export default {
         this.files.splice(index, 1);
       }
       this.commit()
-      this.$success(`文件「${path}」已删除`);
+      this.$message.success(`文件「${path}」已删除`);
     },
     rebuild() {
       utools.getFeatures()
             .forEach(i => utools.removeFeature(i.code))
       Utils.addFeatures(this.settings.data.files)
-      this.$success('重建成功');
+      this.$message.success('重建成功');
     },
     addAlias(path) {
       let file = find(this.files, f => f.path === path)
       if (file) {
         if (!file.aliases) {
-          this.$error('该项为旧数据, 不支持多别名设置, 请删除后重新添加')
+          this.$message.error('该项为旧数据, 不支持多别名设置, 请删除后重新添加')
           return
         }
         this.$prompt('请输入别名', '提示', {
@@ -266,23 +266,23 @@ export default {
         })
             .then(({value}) => {
               if (contain(file.aliases, value)) {
-                this.$warning('别名已存在')
+                this.$message.warning('别名已存在')
               }
               else {
                 file.aliases.push(value)
                 Utils.updateFeature(file)
                 this.commit()
-                this.$success(`别名「${value}」添加成功`);
+                this.$message.success(`别名「${value}」添加成功`);
               }
             })
-            .catch(() => this.$warning('输入已取消'))
+            .catch(() => this.$message.warning('输入已取消'))
       }
     },
     removeAlias(file, alias) {
       remove(file.aliases, value => value === alias)
       Utils.updateFeature(file)
       this.commit()
-      this.$success(`别名「${alias}」已删除`);
+      this.$message.success(`别名「${alias}」已删除`);
     },
     commit() {
       this.$store.commit('updateSettingsFiles', this.files);
@@ -294,18 +294,18 @@ export default {
           let filePath = window.selectFile('file')
           let input = window.importSetting(filePath)
           if (isNil(input.code) || isNil(input.text)) {
-            this.$error(`文件解析错误`);
+            this.$message.error(`文件解析错误`);
             return
           }
           let validateHash = md5(input.text)
           if (input.code !== validateHash) {
-            this.$error(`文件校验错误`);
+            this.$message.error(`文件校验错误`);
             return;
           }
           this.files = JSON.parse(input.text)
           this.commit()
           this.rebuild()
-          this.$success(`导入成功`);
+          this.$message.success(`导入成功`);
           break
         case 'out':
           let folderPath = window.selectFile('folder')
@@ -313,10 +313,10 @@ export default {
           let hash = md5(data)
           let result = window.exportSetting(folderPath, `${hash}\n${data}`)
           if (result.success) {
-            this.$success(`导出成功`);
+            this.$message.success(`导出成功`);
           }
           else {
-            this.$error(`导出失败 ${result.message}`);
+            this.$message.error(`导出失败 ${result.message}`);
           }
           break
       }
